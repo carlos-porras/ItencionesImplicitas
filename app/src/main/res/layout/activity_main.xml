@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_2"
-        android:id="@+id/visit_web"/>
+        android:id="@+id/visitWeb"/>
 
     <Button
         android:layout_width="match_parent"
@@ -34,17 +34,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_4"
-        android:id="@+id/take_photo"/>
+        android:id="@+id/takePhoto"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_5"
-        android:id="@+id/send_email"/>
+        android:id="@+id/sendEmail"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_6"
-        android:id="@+id/get_image_gallery"/>
+        android:id="@+id/getImageGallery"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewImage"/>
 </LinearLayout>
