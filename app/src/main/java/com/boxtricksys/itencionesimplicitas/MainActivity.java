@@ -68,12 +68,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intentCall);
                 break;
             case R.id.visitWeb:
+                Intent intentWebPage = new Intent(Intent.ACTION_VIEW, Uri.parse("http://turisas.com"));
+                startActivity(intentWebPage);
                 break;
             case R.id.geolocalitation:
+                Intent intentLocation = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:4.7161407,-74.2107647"));
+                startActivity(intentLocation);
                 break;
             case R.id.takePhoto:
                 break;
             case R.id.sendEmail:
+                Intent intentSendEmail = new Intent(Intent.ACTION_SEND);
+                intentSendEmail.setType("text/plain");
+                intentSendEmail.putExtra(Intent.EXTRA_SUBJECT, "Test Subject email");
+                intentSendEmail.putExtra(Intent.EXTRA_TEXT, "Body Message");
+                intentSendEmail.putExtra(Intent.EXTRA_EMAIL, new String[]{
+                        "carlos.porras.0508@gmail.com",
+                        "alfonsogallegost@gmail.com",
+                        "elchaconco@gmail.com",
+                        "wcastiblancoq@gmail.com"
+                });
+                startActivity(intentSendEmail);
                 break;
         }
     }
