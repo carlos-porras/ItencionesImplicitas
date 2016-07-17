@@ -1,15 +1,20 @@
 package com.boxtricksys.itencionesimplicitas;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -20,6 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button sendEmail;
     Button getImageGallery;
     ImageView viewImage;
+
+    private Uri pictureUri;
+
+    private static final int RESULT_TAKE_PICTURE = 1;
+    private static final int RESULT_GALLERY = 2;
+
+    private int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intentLocation);
                 break;
             case R.id.takePhoto:
+                Intent intentTakePhoto = new Intent("android.media.action.IMAGE_CAPTURE");
+                pictureUri = Uri.fromFile(getPicture());
+                intentTakePhoto.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+                startActivityForResult(intentTakePhoto, RESULT_TAKE_PICTURE);
                 break;
             case R.id.sendEmail:
                 Intent intentSendEmail = new Intent(Intent.ACTION_SEND);
@@ -90,16 +106,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 startActivity(intentSendEmail);
                 break;
+
+            case R.id.getImageGallery:
+                Intent intentGallery = new Intent(Intent.ACTION_GET_CONTENT);
+                intentGallery.addCategory(Intent.CATEGORY_OPENABLE);
+                intentGallery.setType("image/*");
+                startActivityForResult(intentGallery, RESULT_GALLERY);
+                break;
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
+        if(pictureUri != null){
+            outState.putString("KEY_URI_PICTURE", pictureUri.toString());
+        }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        if (requestCode == RESULT_TAKE_PICTURE) {
+            pictureUri = Uri.parse(savedInstanceState.getString("KEY_URI_PICTURE"));
+            showPictureInToImageView();
+        }
+    }
+
+    private void showPictureInToImageView() {
+        viewImage.setImageURI(pictureUri);
+    }
+
+    public File getPicture() {
+        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "img_" + (System.currentTimeMillis() / 1000 + ".jpg"));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        this.requestCode = requestCode;
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == RESULT_TAKE_PICTURE  && pictureUri != null){
+                showPictureInToImageView();
+            }else if(requestCode == RESULT_GALLERY){
+                pictureUri = Uri.parse(data.getDataString());
+                showPictureInToImageView();
+
+            }
+        }
     }
 }
